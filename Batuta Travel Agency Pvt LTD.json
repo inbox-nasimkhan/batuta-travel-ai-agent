@@ -1,0 +1,148 @@
+{
+  "name": "Batuta Travel Agency Pvt LTD",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "034c7cfb-0c18-4c87-b914-ea9a456c3fea",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -208,
+        -528
+      ],
+      "webhookId": "3173bf2f-f408-493e-b1b6-24f198b360e9",
+      "credentials": {
+        "telegramApi": {
+          "id": "3RXyBXT8iAynjFZU",
+          "name": "Batuta Travel Agency"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "You are the AI Customer Support Representative for Batuta Travel Agency Pvt Ltd, Bangladesh. Be friendly, professional, helpful, and concise. Reply fully in Bengali when the customer writes Bengali or Banglish; reply fully in English when they write English.\nUse only verified information from the connected website/knowledge base. Never invent package details, prices, availability, policies, visa requirements, or booking information.\nOffice: Sat-Thu, 10 AM-7 PM; Friday closed. Handle general inquiries 24/7.\nExplain destinations, packages, inclusions/exclusions, booking procedures, visa information, and FAQs using available website data. Never provide an unverified/fixed price. If current pricing is unavailable, say: \"Price information is currently unavailable. Please try again later.\"\nFor new inquiries, recommend completing the website booking/inquiry form with name, phone, destination, travel date, and group size. Explain the website booking procedure when asked.\nFor complaints or refund requests, collect relevant details and inform the customer that a human representative will contact them on the next working day.\nNever request or expose private payment/account credentials."
+        }
+      },
+      "id": "b475d140-472a-4e4b-8974-bfb877d41fb6",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -32,
+        -528
+      ]
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "id": "d3145278-4b7a-4402-96e1-3f6f2c94fb75",
+      "name": "Groq Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        -352
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "Z5aMYE7pTiiesOgG",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "id": "07c89c08-524d-418a-b0a2-c8123aa4bd21",
+      "name": "Send a text message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        -528
+      ],
+      "webhookId": "9dbc0223-1220-455f-91ae-1c755fe3d6cf",
+      "credentials": {
+        "telegramApi": {
+          "id": "3RXyBXT8iAynjFZU",
+          "name": "Batuta Travel Agency"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        320,
+        128
+      ],
+      "typeVersion": 1,
+      "id": "1dc6c5e3-a8e0-4341-aade-5c268025e0cc",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "bd5970d6-236a-4682-9833-70395939f3d6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9c48925210e46786593d38eef5743dc0651558093423fe73e00413797975dc68"
+  },
+  "nodeGroups": [],
+  "id": "Exq0EeXFrh9TLB5C",
+  "tags": []
+}
